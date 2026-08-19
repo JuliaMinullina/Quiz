@@ -1,0 +1,13 @@
+node_modules
+dist
+test-results
+playwright-report
+blob-report
+playwright/.cache
+.playwright-cli
+.DS_Store
+*.local
+.tmp-*
+node_modules/.tmp
+.agents
+.cursor/skills

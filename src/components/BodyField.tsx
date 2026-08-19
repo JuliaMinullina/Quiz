@@ -1,0 +1,91 @@
+import { AnimatePresence, motion } from 'motion/react'
+import { bodies } from '../content/bodies'
+import { BODY_RENDER_VMIN, bodyPose, bodyTransform, type FieldMode } from '../lib/bodyMotion'
+import { HOME_LAYOUT } from '../lib/layout'
+import { useLocale } from '../lib/locale'
+import { CelestialBody } from './CelestialBody'
+import { OrbitTracks } from './OrbitTracks'
+
+const EASE_TRAVEL = [0.4, 0, 0.2, 1] as const
+const ZOOM_S = 2.7
+const FADE_S = 0.4
+
+export function BodyField({
+  mode,
+  selectedId,
+}: {
+  mode: FieldMode
+  selectedId: string | null
+}) {
+  const { tx } = useLocale()
+  const selected = bodies.find((b) => b.id === selectedId)
+  const intro = mode === 'zoom'
+
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-visible">
+      <OrbitTracks dimmed={mode !== 'constellation'} showSatellite={mode === 'constellation'} />
+      {bodies.map((body) => {
+        const slot = HOME_LAYOUT[body.id]
+        const isSel = body.id === selectedId
+        const pose = bodyPose(mode, slot, isSel, selectedId)
+        const zooming = mode === 'zoom' && isSel
+        const asking = mode === 'ask' && isSel
+        const leaving = (mode === 'zoom' || mode === 'ask') && selectedId && !isSel
+        const homeScale = slot.size / BODY_RENDER_VMIN
+
+        return (
+          <motion.div
+            key={body.id}
+            layout={false}
+            data-testid={`body-${body.id}`}
+            data-body-state={zooming ? 'zoom' : asking ? 'ask' : leaving ? 'leave' : 'idle'}
+            className="absolute isolate overflow-visible"
+            style={{
+              left: `${slot.x}%`,
+              top: `${slot.y}%`,
+              width: `${BODY_RENDER_VMIN}vmin`,
+              height: `${BODY_RENDER_VMIN}vmin`,
+              marginLeft: `${-BODY_RENDER_VMIN / 2}vmin`,
+              marginTop: `${-BODY_RENDER_VMIN / 2}vmin`,
+              zIndex: zooming ? 80 : isSel ? 1 : Math.round(slot.y),
+              willChange: zooming ? 'transform, opacity' : 'auto',
+              transformOrigin: '50% 50%',
+              backfaceVisibility: 'hidden',
+            }}
+            initial={{ transform: bodyTransform({ x: 0, y: 0, scale: homeScale }), opacity: 1 }}
+            animate={{
+              transform: bodyTransform(pose),
+              opacity: pose.opacity,
+            }}
+            transition={
+              asking
+                ? {
+                    transform: { duration: 0 },
+                    opacity: { duration: FADE_S, ease: EASE_TRAVEL },
+                  }
+                : zooming || leaving
+                  ? { duration: ZOOM_S, ease: EASE_TRAVEL }
+                  : { duration: 0.9, ease: EASE_TRAVEL }
+            }
+          >
+            <CelestialBody variant={body.variant} className="h-full w-full" />
+          </motion.div>
+        )
+      })}
+      <AnimatePresence>
+        {intro && selected && (
+          <motion.p
+            key={selected.id}
+            className="pointer-events-none absolute left-1/2 top-[76%] z-[90] -translate-x-1/2 text-center font-display text-[3.2rem] font-medium uppercase tracking-[0.22em] text-white"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8, transition: { duration: FADE_S, ease: EASE_TRAVEL } }}
+            transition={{ delay: 0.7, duration: 1.15, ease: EASE_TRAVEL }}
+          >
+            {tx(selected.name)}
+          </motion.p>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
