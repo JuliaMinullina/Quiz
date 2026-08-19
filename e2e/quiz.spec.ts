@@ -80,6 +80,27 @@ test('selected body grows toward the camera without oscillating', async ({ page 
   expect(reversals).toBe(0)
 })
 
+test('film grain stays over a planet while it zooms in', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.clear()
+  })
+  await page.goto('/')
+  await page.getByTestId('start').click()
+  const body = page.locator('[data-body-state="zoom"]')
+  await expect(body).toBeVisible()
+
+  const [grainZ, bodyZ, titleZ] = await page.evaluate(() => {
+    const grain = document.querySelector('[data-testid="film-grain"]')
+    const zoom = document.querySelector('[data-body-state="zoom"]')
+    const title = document.querySelector('[data-testid="orbit-stage"] > p')
+    const z = (el: Element | null) => Number(el ? getComputedStyle(el).zIndex : NaN)
+    return [z(grain), z(zoom?.parentElement ?? null), z(title)]
+  })
+
+  expect(grainZ).toBeGreaterThan(bodyZ)
+  expect(grainZ).toBeGreaterThan(titleZ)
+})
+
 test('restart returns to the start screen', async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.clear()

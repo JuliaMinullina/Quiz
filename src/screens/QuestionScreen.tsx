@@ -85,7 +85,7 @@ export function QuestionScreen({
           className="mx-auto mb-[2.6vmin] w-full shrink-0 text-center"
           text={tx(question.prompt)}
         />
-        <div className={compact ? 'h-[min(50vmin,58%)] min-h-[28vmin] w-full shrink-0' : 'min-h-0 flex-1'}>
+        <div className={compact ? 'h-[min(56vmin,66%)] min-h-[32vmin] w-full shrink-0' : 'min-h-0 flex-1'}>
           {question.kind === 'choice4' || question.kind === 'odd' || question.kind === 'who' || question.kind === 'map' ? (
             <ChoiceGrid
               options={question.options}

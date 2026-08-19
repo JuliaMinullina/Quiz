@@ -98,17 +98,28 @@ button:focus-visible,
   width: 100%;
   max-width: 34em;
   font-family: var(--font-sans);
-  font-size: 2.15rem;
+  font-size: 1.82rem;
   font-weight: 500;
-  line-height: 1.38;
+  line-height: 1.32;
   letter-spacing: 0.01em;
   text-align: center;
   text-wrap: pretty;
+  overflow: visible;
   color: rgb(220 240 255 / 0.92);
+}
+
+.answer-card:has(.answer-fact) {
+  gap: 0.55rem;
+}
+
+.answer-card:has(.answer-fact) .answer-label {
+  font-size: 2.35rem;
 }
 
 .answer-fact--panel {
   max-width: 46em;
+  font-size: 2.05rem;
+  line-height: 1.36;
   text-align: left;
 }
 

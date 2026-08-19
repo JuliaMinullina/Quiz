@@ -331,10 +331,10 @@ export const missionLunnaya: Mission = {
         'Yekaterinburg was founded in 1723 as a factory-fortress on the Iset — twenty years after Petersburg.',
       ),
       items: [
-        step('spb', 'Основание Санкт-Петербурга (1703)', 'Founding of Saint Petersburg (1703)', 1),
-        step('ekb', 'Основание Екатеринбурга (1723)', 'Founding of Yekaterinburg (1723)', 2),
-        step('msu', 'Открытие Московского университета (1755)', 'Opening of Moscow University (1755)', 3),
-        step('transsib', 'Начало строительства Транссиба (1891)', 'Start of Trans-Siberian construction (1891)', 4),
+        step('spb', 'Основание Санкт-Петербурга', 'Founding of Saint Petersburg', 1),
+        step('ekb', 'Основание Екатеринбурга', 'Founding of Yekaterinburg', 2),
+        step('msu', 'Открытие Московского университета', 'Opening of Moscow University', 3),
+        step('transsib', 'Начало строительства Транссиба', 'Start of Trans-Siberian construction', 4),
       ],
     },
     {

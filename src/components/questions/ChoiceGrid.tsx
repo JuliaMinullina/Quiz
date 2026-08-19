@@ -41,10 +41,7 @@ export function ChoiceGrid({
           >
             <span className="answer-label">{tx(opt.label)}</span>
             {revealed && opt.correct ? (
-              <AnswerFact
-                className={mapRegion ? 'max-h-[72%] overflow-y-auto' : 'max-h-[48%] overflow-y-auto'}
-                text={tx(fact)}
-              />
+              <AnswerFact className="min-h-0" text={tx(fact)} />
             ) : null}
           </KioskButton>
         )

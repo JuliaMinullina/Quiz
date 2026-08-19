@@ -38,7 +38,7 @@ export function TrueFalse({
           >
             <span className="answer-label">{tx(value ? ui.true : ui.false)}</span>
             {revealed && isCorrect ? (
-              <AnswerFact className="max-h-[48%] overflow-y-auto" text={tx(fact)} />
+              <AnswerFact className="min-h-0" text={tx(fact)} />
             ) : null}
           </KioskButton>
         )

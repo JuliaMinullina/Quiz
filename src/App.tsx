@@ -64,11 +64,10 @@ function Kiosk() {
   }
 
   return (
-    <div className="relative h-full w-full overflow-hidden">
+    <div className="relative isolate h-full w-full overflow-hidden">
       <Starfield />
       {phase.name === 'quote' && <Aurora />}
       {phase.name !== 'quote' && <BodyField mode={fieldMode} selectedId={selectedId} />}
-      <Grain />
       {phase.name === 'home' && <HomeCopy onStart={begin} />}
       {phase.name === 'ask' && missionById(phase.missionId).questions[phase.index] && (
         <QuestionScreen
@@ -84,6 +83,7 @@ function Kiosk() {
         <QuoteScreen quoteId={phase.quoteId} onAgain={begin} onRestart={goHome} />
       )}
       <Hud />
+      <Grain />
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { paintFilmGrain } from '../lib/grain'
 
 export function Starfield() {
   const ref = useRef<HTMLCanvasElement>(null)
@@ -48,6 +49,8 @@ export function Starfield() {
         ctx.arc(star.x * w, star.y * h, star.r, 0, Math.PI * 2)
         ctx.fill()
       }
+
+      paintFilmGrain(ctx, w, h, 0.22, 'overlay')
     }
     draw()
     const onResize = () => draw()

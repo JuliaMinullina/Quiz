@@ -6,6 +6,19 @@ export type HomeSlot = {
   size: number
 }
 
+export type OrbitDef = {
+  cx: number
+  cy: number
+  rx: number
+  ry: number
+  rot: number
+}
+
+/** 16:9 stage in height-units (height = 100). */
+export const STAGE = { w: 1600 / 9, h: 100 } as const
+
+export const HERO = { x: STAGE.w / 2, y: 40, viewX: 50, viewY: 40 } as const
+
 export function ellipsePoint(
   cx: number,
   cy: number,
@@ -24,18 +37,66 @@ export function ellipsePoint(
   }
 }
 
-export const ORBIT_A = { cx: 50, cy: 44, rx: 41, ry: 31, rot: -19 }
-export const ORBIT_B = { cx: 50, cy: 46, rx: 33, ry: 15, rot: 31 }
+export function stageToView(p: { x: number; y: number }) {
+  return { x: (p.x / STAGE.w) * 100, y: (p.y / STAGE.h) * 100 }
+}
+
+function fmt(n: number) {
+  return n.toFixed(3)
+}
+
+/** True elliptical arcs — polylines faceted the stroke and `Z` left a seam. */
+export function ellipsePath(
+  cx: number,
+  cy: number,
+  rx: number,
+  ry: number,
+  rotDeg: number,
+  fromT = 0,
+  toT = 1,
+): string {
+  const start = ellipsePoint(cx, cy, rx, ry, rotDeg, fromT)
+  const span = toT - fromT
+  if (Math.abs(Math.abs(span) - 1) < 1e-9) {
+    const mid = ellipsePoint(cx, cy, rx, ry, rotDeg, fromT + 0.5 * Math.sign(span || 1))
+    return `M ${fmt(start.x)} ${fmt(start.y)} A ${rx} ${ry} ${rotDeg} 1 1 ${fmt(mid.x)} ${fmt(mid.y)} A ${rx} ${ry} ${rotDeg} 1 1 ${fmt(start.x)} ${fmt(start.y)}`
+  }
+  const end = ellipsePoint(cx, cy, rx, ry, rotDeg, toT)
+  const large: 0 | 1 = Math.abs(span) > 0.5 ? 1 : 0
+  const sweep: 0 | 1 = span >= 0 ? 1 : 0
+  return `M ${fmt(start.x)} ${fmt(start.y)} A ${rx} ${ry} ${rotDeg} ${large} ${sweep} ${fmt(end.x)} ${fmt(end.y)}`
+}
+
+/** Nested ellipses around the hero — a solar system, not a free-floating pair. */
+export const ORBIT_A: OrbitDef = { cx: HERO.x, cy: HERO.y, rx: 76, ry: 34, rot: -16 }
+export const ORBIT_B: OrbitDef = { cx: HERO.x, cy: HERO.y, rx: 52, ry: 30, rot: 30 }
+
+export const ORBIT_PLACEMENTS: Record<Exclude<BodyId, 'kolybel'>, { orbit: OrbitDef; t: number; size: number }> =
+  {
+    kedra: { orbit: ORBIT_A, t: 0.08, size: 11 },
+    alta: { orbit: ORBIT_A, t: 0.18, size: 7.5 },
+    selena: { orbit: ORBIT_A, t: 0.32, size: 9 },
+    mira: { orbit: ORBIT_A, t: 0.44, size: 10.5 },
+    efir: { orbit: ORBIT_A, t: 0.58, size: 14 },
+    par: { orbit: ORBIT_A, t: 0, size: 9.5 },
+    oborot: { orbit: ORBIT_B, t: 0.28, size: 8 },
+    polar: { orbit: ORBIT_B, t: 0.48, size: 12.5 },
+    vual: { orbit: ORBIT_B, t: 0.9, size: 9 },
+  }
+
+function slot(orbit: OrbitDef, t: number, size: number): HomeSlot {
+  return { ...stageToView(ellipsePoint(orbit.cx, orbit.cy, orbit.rx, orbit.ry, orbit.rot, t)), size }
+}
 
 export const HOME_LAYOUT: Record<BodyId, HomeSlot> = {
-  kolybel: { x: 50, y: 40, size: 44 },
-  kedra: { ...ellipsePoint(ORBIT_A.cx, ORBIT_A.cy, ORBIT_A.rx, ORBIT_A.ry, ORBIT_A.rot, 0.06), size: 11 },
-  alta: { ...ellipsePoint(ORBIT_A.cx, ORBIT_A.cy, ORBIT_A.rx, ORBIT_A.ry, ORBIT_A.rot, 0.2), size: 7.5 },
-  selena: { ...ellipsePoint(ORBIT_A.cx, ORBIT_A.cy, ORBIT_A.rx, ORBIT_A.ry, ORBIT_A.rot, 0.34), size: 9 },
-  efir: { ...ellipsePoint(ORBIT_A.cx, ORBIT_A.cy, ORBIT_A.rx, ORBIT_A.ry, ORBIT_A.rot, 0.58), size: 14 },
-  mira: { ...ellipsePoint(ORBIT_A.cx, ORBIT_A.cy, ORBIT_A.rx, ORBIT_A.ry, ORBIT_A.rot, 0.74), size: 10.5 },
-  par: { ...ellipsePoint(ORBIT_A.cx, ORBIT_A.cy, ORBIT_A.rx, ORBIT_A.ry, ORBIT_A.rot, 0.9), size: 9.5 },
-  oborot: { ...ellipsePoint(ORBIT_B.cx, ORBIT_B.cy, ORBIT_B.rx, ORBIT_B.ry, ORBIT_B.rot, 0.12), size: 8 },
-  polar: { ...ellipsePoint(ORBIT_B.cx, ORBIT_B.cy, ORBIT_B.rx, ORBIT_B.ry, ORBIT_B.rot, 0.48), size: 12.5 },
-  vual: { ...ellipsePoint(ORBIT_B.cx, ORBIT_B.cy, ORBIT_B.rx, ORBIT_B.ry, ORBIT_B.rot, 0.78), size: 9 },
+  kolybel: { x: HERO.viewX, y: HERO.viewY, size: 44 },
+  kedra: slot(ORBIT_A, ORBIT_PLACEMENTS.kedra.t, ORBIT_PLACEMENTS.kedra.size),
+  alta: slot(ORBIT_A, ORBIT_PLACEMENTS.alta.t, ORBIT_PLACEMENTS.alta.size),
+  selena: slot(ORBIT_A, ORBIT_PLACEMENTS.selena.t, ORBIT_PLACEMENTS.selena.size),
+  mira: slot(ORBIT_A, ORBIT_PLACEMENTS.mira.t, ORBIT_PLACEMENTS.mira.size),
+  efir: slot(ORBIT_A, ORBIT_PLACEMENTS.efir.t, ORBIT_PLACEMENTS.efir.size),
+  par: slot(ORBIT_A, ORBIT_PLACEMENTS.par.t, ORBIT_PLACEMENTS.par.size),
+  oborot: slot(ORBIT_B, ORBIT_PLACEMENTS.oborot.t, ORBIT_PLACEMENTS.oborot.size),
+  polar: slot(ORBIT_B, ORBIT_PLACEMENTS.polar.t, ORBIT_PLACEMENTS.polar.size),
+  vual: slot(ORBIT_B, ORBIT_PLACEMENTS.vual.t, ORBIT_PLACEMENTS.vual.size),
 }

@@ -317,10 +317,10 @@ export const missionSiyanie: Mission = {
         'The university opened in 1755; Lobachevsky’s work was published in Kazan in 1829; Mendeleev compiled his table in 1869; Pavlov received the Nobel Prize in 1904.',
       ),
       items: [
-        step('msu', 'Московский университет (1755)', 'Moscow University (1755)', 1),
-        step('lobachevsky', 'Геометрия Лобачевского (~1829, Казань)', 'Lobachevsky’s geometry (~1829, Kazan)', 2),
-        step('table', 'Таблица Менделеева (1869)', 'Mendeleev’s table (1869)', 3),
-        step('nobel', 'Нобелевская премия Ивана Павлова (1904)', 'Ivan Pavlov’s Nobel Prize (1904)', 4),
+        step('msu', 'Московский университет', 'Moscow University', 1),
+        step('lobachevsky', 'Геометрия Лобачевского, Казань', 'Lobachevsky’s geometry, Kazan', 2),
+        step('table', 'Таблица Менделеева', 'Mendeleev’s table', 3),
+        step('nobel', 'Нобелевская премия Ивана Павлова', 'Ivan Pavlov’s Nobel Prize', 4),
       ],
     },
     {

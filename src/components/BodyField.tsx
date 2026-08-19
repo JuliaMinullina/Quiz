@@ -22,9 +22,18 @@ export function BodyField({
   const intro = mode === 'zoom'
 
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-visible">
-      <OrbitTracks dimmed={mode !== 'constellation'} showSatellite={mode === 'constellation'} />
-      {bodies.map((body) => {
+    <div className="pointer-events-none absolute inset-0 grid place-items-center overflow-visible">
+      <div
+        data-testid="orbit-stage"
+        className="relative overflow-visible"
+        style={{
+          width: 'min(100vw, calc(100vh * 16 / 9))',
+          height: 'min(100vh, calc(100vw * 9 / 16))',
+          containerType: 'size',
+        }}
+      >
+        <OrbitTracks dimmed={mode !== 'constellation'} showSatellite={mode === 'constellation'} />
+        {bodies.map((body) => {
         const slot = HOME_LAYOUT[body.id]
         const isSel = body.id === selectedId
         const pose = bodyPose(mode, slot, isSel, selectedId)
@@ -34,20 +43,24 @@ export function BodyField({
         const homeScale = slot.size / BODY_RENDER_VMIN
 
         return (
-          <motion.div
+          <div
             key={body.id}
-            layout={false}
-            data-testid={`body-${body.id}`}
-            data-body-state={zooming ? 'zoom' : asking ? 'ask' : leaving ? 'leave' : 'idle'}
             className="absolute isolate overflow-visible"
             style={{
               left: `${slot.x}%`,
               top: `${slot.y}%`,
-              width: `${BODY_RENDER_VMIN}vmin`,
-              height: `${BODY_RENDER_VMIN}vmin`,
-              marginLeft: `${-BODY_RENDER_VMIN / 2}vmin`,
-              marginTop: `${-BODY_RENDER_VMIN / 2}vmin`,
-              zIndex: zooming ? 80 : isSel ? 1 : Math.round(slot.y),
+              width: `${BODY_RENDER_VMIN}cqh`,
+              height: `${BODY_RENDER_VMIN}cqh`,
+              transform: 'translate(-50%, -50%)',
+              zIndex: zooming ? 80 : body.id === 'kolybel' ? 2 : 4,
+            }}
+          >
+          <motion.div
+            layout={false}
+            data-testid={`body-${body.id}`}
+            data-body-state={zooming ? 'zoom' : asking ? 'ask' : leaving ? 'leave' : 'idle'}
+            className="h-full w-full overflow-visible"
+            style={{
               willChange: zooming ? 'transform, opacity' : 'auto',
               transformOrigin: '50% 50%',
               backfaceVisibility: 'hidden',
@@ -70,22 +83,24 @@ export function BodyField({
           >
             <CelestialBody variant={body.variant} className="h-full w-full" />
           </motion.div>
+          </div>
         )
       })}
-      <AnimatePresence>
-        {intro && selected && (
-          <motion.p
-            key={selected.id}
-            className="pointer-events-none absolute left-1/2 top-[76%] z-[90] -translate-x-1/2 text-center font-display text-[3.2rem] font-medium uppercase tracking-[0.22em] text-white"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8, transition: { duration: FADE_S, ease: EASE_TRAVEL } }}
-            transition={{ delay: 0.7, duration: 1.15, ease: EASE_TRAVEL }}
-          >
-            {tx(selected.name)}
-          </motion.p>
-        )}
-      </AnimatePresence>
+        <AnimatePresence>
+          {intro && selected && (
+            <motion.p
+              key={selected.id}
+              className="pointer-events-none absolute left-1/2 top-[76%] z-[90] -translate-x-1/2 text-center font-display text-[3.2rem] font-medium uppercase tracking-[0.22em] text-white"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8, transition: { duration: FADE_S, ease: EASE_TRAVEL } }}
+              transition={{ delay: 0.7, duration: 1.15, ease: EASE_TRAVEL }}
+            >
+              {tx(selected.name)}
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   )
 }
