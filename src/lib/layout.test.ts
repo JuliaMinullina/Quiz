@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   ellipsePath,
   ellipsePoint,
+  FIELD_SCALE,
   HERO,
   HOME_LAYOUT,
   ORBIT_A,
@@ -18,6 +19,14 @@ describe('stage', () => {
 })
 
 describe('orbit tracks', () => {
+  it('places the constellation on the vertical centre at 90% scale', () => {
+    expect(HERO.viewY).toBe(50)
+    expect(HERO.y).toBe(STAGE.h / 2)
+    expect(FIELD_SCALE).toBe(0.9)
+    expect(ORBIT_A.rx).toBeCloseTo(76 * FIELD_SCALE)
+    expect(HOME_LAYOUT.kolybel.size).toBeCloseTo(44 * FIELD_SCALE)
+  })
+
   it('centres both tracks on the hero', () => {
     expect(ORBIT_A.cx).toBe(HERO.x)
     expect(ORBIT_A.cy).toBe(HERO.y)

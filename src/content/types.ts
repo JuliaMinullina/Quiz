@@ -14,6 +14,10 @@ export type BodyId =
   | 'polar'
   | 'vual'
 
+export type ModeId = 'russia' | 'neanderthal' | 'teacher' | 'cyber'
+
+export type QuizModeId = Exclude<ModeId, 'teacher'>
+
 export type MissionId =
   | 'poehali'
   | 'chaika'
@@ -25,6 +29,10 @@ export type MissionId =
   | 'polusharie'
   | 'siyanie'
   | 'sosedka'
+
+export type NeanderthalSetId = 'neo-finds' | 'neo-craft' | 'neo-genome' | 'neo-daily'
+
+export type CyberSetId = 'cyber-passwords' | 'cyber-phishing' | 'cyber-device' | 'cyber-data'
 
 export type QuoteId =
   | 'lomonosov'
@@ -54,11 +62,14 @@ export type ChoiceQuestion = {
   mapRegion?: MapRegion
 }
 
+export type TrueFalsePair = 'trueFalse' | 'truthMyth'
+
 export type TrueFalseQuestion = {
   kind: 'trueFalse'
   prompt: Text
   fact: Text
   correctIsTrue: boolean
+  pair?: TrueFalsePair
 }
 
 export type MatchPair = {
@@ -95,16 +106,28 @@ export type Question =
 
 export type CelestialBody = {
   id: BodyId
-  missionId: MissionId
   name: Text
   variant: BodyId
 }
 
-export type Mission = {
+export type QuizSet = {
+  id: string
+  questions: readonly Question[]
+}
+
+export type Mission = QuizSet & {
   id: MissionId
   name: Text
   bodyId: BodyId
-  questions: readonly Question[]
+}
+
+export type ModeKind = 'quiz' | 'stub'
+
+export type Mode = {
+  id: ModeId
+  kind: ModeKind
+  title: Text
+  blurb: Text
 }
 
 export type Quote = {

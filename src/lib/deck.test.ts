@@ -63,4 +63,25 @@ describe('createDeck', () => {
     expect(missions.shown()).toEqual(['m1'])
     expect(quotes.shown()).toEqual(['q1'])
   })
+
+  it('keeps body, mission and extra quiz decks independent', () => {
+    const storage = memoryStorage()
+    const bodies = createDeck(['kedra', 'alta'], { key: 'orbita-rossii:bodies', storage, random: () => 0 })
+    const russia = createDeck(['poehali', 'chaika'], {
+      key: 'orbita-rossii:missions',
+      storage,
+      random: () => 0,
+    })
+    const neo = createDeck(['neo-finds', 'neo-craft'], {
+      key: 'orbita-rossii:neanderthals',
+      storage,
+      random: () => 0,
+    })
+    expect(bodies.draw()).toBe('kedra')
+    expect(russia.draw()).toBe('poehali')
+    expect(neo.draw()).toBe('neo-finds')
+    expect(bodies.shown()).toEqual(['kedra'])
+    expect(russia.shown()).toEqual(['poehali'])
+    expect(neo.shown()).toEqual(['neo-finds'])
+  })
 })

@@ -3,7 +3,6 @@ import type { Question, Text } from '../content/types'
 import { ui } from '../content/ui'
 import { useLocale } from '../lib/locale'
 import { KioskButton } from '../components/KioskButton'
-import { OrbitProgress } from '../components/OrbitProgress'
 import { QuestionPrompt } from '../components/QuestionPrompt'
 import { ChoiceGrid } from '../components/questions/ChoiceGrid'
 import { MatchPairs } from '../components/questions/MatchPairs'
@@ -12,14 +11,12 @@ import { TrueFalse } from '../components/questions/TrueFalse'
 
 export function QuestionScreen({
   question,
-  index,
-  bodyName,
+  title,
   onNext,
   onRestart,
 }: {
   question: Question
-  index: number
-  bodyName: Text
+  title: Text
   onNext: () => void
   onRestart: () => void
 }) {
@@ -66,11 +63,10 @@ export function QuestionScreen({
 
   return (
     <div className="relative z-40 flex h-full flex-col px-[4.2vmin] pb-[3vmin] pt-[2.8vmin]">
-      <header className="mb-[1.4vmin] flex shrink-0 items-center justify-between gap-[2rem]">
+      <header className="mb-[1.4vmin] flex min-h-[8.8vmin] shrink-0 items-center justify-between gap-[2rem]">
         <div className="flex items-center gap-[1.4rem]">
-          <OrbitProgress current={index + 1} total={5} />
-          <p className="font-display text-[1.7rem] font-medium uppercase tracking-[0.2em] text-white">
-            {tx(bodyName)}
+          <p className="font-display text-[1.7rem] font-medium tracking-[-0.02em] text-white">
+            {tx(title)}
           </p>
         </div>
         <KioskButton data-testid="restart" variant="ghost" onClick={onRestart}>
@@ -103,6 +99,7 @@ export function QuestionScreen({
               revealed={revealed}
               correctIsTrue={question.correctIsTrue}
               onPick={onTf}
+              falseLabel={question.pair === 'truthMyth' ? ui.myth : ui.false}
             />
           ) : null}
           {question.kind === 'match' ? (

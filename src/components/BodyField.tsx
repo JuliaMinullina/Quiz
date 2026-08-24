@@ -2,7 +2,6 @@ import { AnimatePresence, motion } from 'motion/react'
 import { bodies } from '../content/bodies'
 import { BODY_RENDER_VMIN, bodyPose, bodyTransform, type FieldMode } from '../lib/bodyMotion'
 import { HOME_LAYOUT } from '../lib/layout'
-import { useLocale } from '../lib/locale'
 import { CelestialBody } from './CelestialBody'
 import { OrbitTracks } from './OrbitTracks'
 
@@ -17,12 +16,8 @@ export function BodyField({
   mode: FieldMode
   selectedId: string | null
 }) {
-  const { tx } = useLocale()
-  const selected = bodies.find((b) => b.id === selectedId)
-  const intro = mode === 'zoom'
-
   return (
-    <div className="pointer-events-none absolute inset-0 grid place-items-center overflow-visible">
+    <div className="pointer-events-none absolute inset-0 z-[1] grid place-items-center overflow-visible">
       <div
         data-testid="orbit-stage"
         className="relative overflow-visible"
@@ -32,7 +27,19 @@ export function BodyField({
           containerType: 'size',
         }}
       >
-        <OrbitTracks dimmed={mode !== 'constellation'} showSatellite={mode === 'constellation'} />
+        <AnimatePresence>
+          {mode === 'constellation' && (
+            <motion.div
+              key="tracks"
+              className="absolute inset-0"
+              initial={{ opacity: 1 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: ZOOM_S, ease: EASE_TRAVEL } }}
+            >
+              <OrbitTracks showSatellite />
+            </motion.div>
+          )}
+        </AnimatePresence>
         {bodies.map((body) => {
         const slot = HOME_LAYOUT[body.id]
         const isSel = body.id === selectedId
@@ -52,7 +59,7 @@ export function BodyField({
               width: `${BODY_RENDER_VMIN}cqh`,
               height: `${BODY_RENDER_VMIN}cqh`,
               transform: 'translate(-50%, -50%)',
-              zIndex: zooming ? 80 : body.id === 'kolybel' ? 2 : 4,
+              zIndex: zooming ? 8 : body.id === 'kolybel' ? 2 : 4,
             }}
           >
           <motion.div
@@ -86,21 +93,27 @@ export function BodyField({
           </div>
         )
       })}
-        <AnimatePresence>
-          {intro && selected && (
-            <motion.p
-              key={selected.id}
-              className="pointer-events-none absolute left-1/2 top-[76%] z-[90] -translate-x-1/2 text-center font-display text-[3.2rem] font-medium uppercase tracking-[0.22em] text-white"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8, transition: { duration: FADE_S, ease: EASE_TRAVEL } }}
-              transition={{ delay: 0.7, duration: 1.15, ease: EASE_TRAVEL }}
-            >
-              {tx(selected.name)}
-            </motion.p>
-          )}
-        </AnimatePresence>
       </div>
     </div>
+  )
+}
+
+export function ModeOverlay({ title, blurb }: { title: string; blurb: string }) {
+  return (
+    <motion.div
+      data-testid="mode-overlay"
+      className="pointer-events-none absolute inset-x-0 bottom-[5.2vmin] z-[90] px-[8vmin] text-center"
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 8, transition: { duration: FADE_S, ease: EASE_TRAVEL } }}
+      transition={{ delay: 0.25, duration: 0.85, ease: EASE_TRAVEL }}
+    >
+      <p className="font-display text-[2.6rem] font-medium leading-[1.15] tracking-[-0.02em] text-white [text-shadow:0_2px_28px_rgba(2,8,22,0.85)]">
+        {title}
+      </p>
+      <p className="mt-[0.7rem] text-[1.45rem] leading-[1.3] text-white/80 [text-shadow:0_2px_20px_rgba(2,8,22,0.8)]">
+        {blurb}
+      </p>
+    </motion.div>
   )
 }

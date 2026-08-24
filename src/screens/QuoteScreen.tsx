@@ -25,8 +25,8 @@ export function QuoteScreen({
       </p>
       {quote.source && <p className="mt-[0.6vmin] text-[1.2rem] text-white/40">{tx(quote.source)}</p>}
       <div className="mt-[4vmin] flex flex-wrap items-center justify-center gap-[1.4rem]">
-        <KioskButton data-testid="restart" variant="ghost" onClick={onRestart}>
-          {tx(ui.restart)}
+        <KioskButton data-testid="home" variant="ghost" onClick={onRestart}>
+          {tx(ui.home)}
         </KioskButton>
         <KioskButton data-testid="again" onClick={onAgain}>
           {tx(ui.again)}

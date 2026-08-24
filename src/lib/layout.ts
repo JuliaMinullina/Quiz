@@ -17,7 +17,10 @@ export type OrbitDef = {
 /** 16:9 stage in height-units (height = 100). */
 export const STAGE = { w: 1600 / 9, h: 100 } as const
 
-export const HERO = { x: STAGE.w / 2, y: 40, viewX: 50, viewY: 40 } as const
+/** Whole constellation vs the original artboard. */
+export const FIELD_SCALE = 0.9
+
+export const HERO = { x: STAGE.w / 2, y: STAGE.h / 2, viewX: 50, viewY: 50 } as const
 
 export function ellipsePoint(
   cx: number,
@@ -68,8 +71,20 @@ export function ellipsePath(
 }
 
 /** Nested ellipses around the hero — a solar system, not a free-floating pair. */
-export const ORBIT_A: OrbitDef = { cx: HERO.x, cy: HERO.y, rx: 76, ry: 34, rot: -16 }
-export const ORBIT_B: OrbitDef = { cx: HERO.x, cy: HERO.y, rx: 52, ry: 30, rot: 30 }
+export const ORBIT_A: OrbitDef = {
+  cx: HERO.x,
+  cy: HERO.y,
+  rx: 76 * FIELD_SCALE,
+  ry: 34 * FIELD_SCALE,
+  rot: -16,
+}
+export const ORBIT_B: OrbitDef = {
+  cx: HERO.x,
+  cy: HERO.y,
+  rx: 52 * FIELD_SCALE,
+  ry: 30 * FIELD_SCALE,
+  rot: 30,
+}
 
 export const ORBIT_PLACEMENTS: Record<Exclude<BodyId, 'kolybel'>, { orbit: OrbitDef; t: number; size: number }> =
   {
@@ -85,11 +100,14 @@ export const ORBIT_PLACEMENTS: Record<Exclude<BodyId, 'kolybel'>, { orbit: Orbit
   }
 
 function slot(orbit: OrbitDef, t: number, size: number): HomeSlot {
-  return { ...stageToView(ellipsePoint(orbit.cx, orbit.cy, orbit.rx, orbit.ry, orbit.rot, t)), size }
+  return {
+    ...stageToView(ellipsePoint(orbit.cx, orbit.cy, orbit.rx, orbit.ry, orbit.rot, t)),
+    size: size * FIELD_SCALE,
+  }
 }
 
 export const HOME_LAYOUT: Record<BodyId, HomeSlot> = {
-  kolybel: { x: HERO.viewX, y: HERO.viewY, size: 44 },
+  kolybel: { x: HERO.viewX, y: HERO.viewY, size: 44 * FIELD_SCALE },
   kedra: slot(ORBIT_A, ORBIT_PLACEMENTS.kedra.t, ORBIT_PLACEMENTS.kedra.size),
   alta: slot(ORBIT_A, ORBIT_PLACEMENTS.alta.t, ORBIT_PLACEMENTS.alta.size),
   selena: slot(ORBIT_A, ORBIT_PLACEMENTS.selena.t, ORBIT_PLACEMENTS.selena.size),

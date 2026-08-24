@@ -12,7 +12,13 @@ export function Hud() {
 function Corner({ className }: { className: string }) {
   return (
     <svg className={`absolute h-[5.6vmin] w-[5.6vmin] ${className}`} viewBox="0 0 48 48" fill="none">
-      <path d="M1 20V1h19" stroke="rgba(232,246,255,0.55)" strokeWidth="0.9" />
+      <path
+        d="M4 36 L4 4 L36 4"
+        stroke="var(--color-line)"
+        strokeWidth="0.9"
+        strokeLinecap="square"
+        strokeLinejoin="miter"
+      />
     </svg>
   )
 }

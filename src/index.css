@@ -1,17 +1,50 @@
-@import "@fontsource-variable/unbounded";
 @import "@fontsource-variable/manrope";
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Factor A";
+  src: url("../font/FactorALight-Regular.woff2") format("woff2");
+  font-weight: 200 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Factor A";
+  src: url("../font/FactorA-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Factor A";
+  src: url("../font/FactorAMedium-Regular.woff2") format("woff2");
+  font-weight: 500 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Factor A";
+  src: url("../font/FactorA-Bold.woff2") format("woff2");
+  font-weight: 700 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
-  --font-display: "Unbounded Variable", ui-sans-serif, sans-serif;
+  --font-display: "Factor A", ui-sans-serif, sans-serif;
   --font-sans: "Manrope Variable", ui-sans-serif, sans-serif;
-  --color-navy: #050b18;
-  --color-navy-2: #0b1730;
+  --color-navy: #0a0c22;
+  --color-navy-2: #16183f;
+  --color-ink: #27205d;
   --color-cyan: #7ee7ff;
   --color-cyan-dim: #3aa8c4;
-  --color-violet: #9b7dff;
+  --color-sky: #c8dbe8;
+  --color-violet: #5854a4;
   --color-amber: #f0b15a;
-  --color-line: rgba(232, 246, 255, 0.42);
+  --color-line: rgba(200, 219, 232, 0.42);
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
@@ -29,7 +62,7 @@ body,
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background: #0c2460;
+  background: #0a0c22;
   color: #e8f6ff;
   font-family: var(--font-sans);
   font-size: 1.15vmin;
@@ -60,12 +93,150 @@ button:focus-visible,
 }
 
 .kiosk-btn {
-  transition: transform 100ms var(--ease-out), opacity 180ms var(--ease-out),
-    background-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
+  transition:
+    transform 100ms var(--ease-out),
+    opacity 180ms var(--ease-out),
+    background 180ms var(--ease-out),
+    border-color 180ms var(--ease-out),
+    box-shadow 180ms var(--ease-out);
 }
 
 .kiosk-btn:active {
   transform: scale(0.97);
+}
+
+.kiosk-facet {
+  --cut: 2.2vmin;
+  --facet-fill: rgb(70 168 245 / 0.2);
+  --facet-fill-hi: rgb(170 230 255 / 0.12);
+  --facet-bloom: rgb(90 190 255 / 0.5);
+  --facet-mark: rgb(180 225 255 / 0.2);
+  --facet-glow:
+    0 0 30px 5px rgb(125 215 255 / 0.48),
+    0 0 56px 0 rgb(85 180 255 / 0.3);
+  --path: polygon(
+    0 0,
+    calc(100% - var(--cut)) 0,
+    100% var(--cut),
+    100% 100%,
+    var(--cut) 100%,
+    0 calc(100% - var(--cut))
+  );
+  position: relative;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+}
+
+.kiosk-facet:focus-visible {
+  outline: none;
+  --facet-glow:
+    0 0 32px 6px rgb(140 220 255 / 0.55),
+    0 0 60px 0 rgb(90 190 255 / 0.34);
+}
+
+.kiosk-facet-compact {
+  --cut: 1.7vmin;
+}
+
+.kiosk-facet-ghost {
+  --cut: 1.45vmin;
+  --facet-fill: rgb(80 165 240 / 0.1);
+  --facet-fill-hi: rgb(160 225 255 / 0.07);
+  --facet-bloom: rgb(90 185 255 / 0.28);
+  --facet-mark: rgb(180 225 255 / 0.14);
+  --facet-glow:
+    0 0 22px 3px rgb(140 220 255 / 0.28),
+    0 0 40px 0 rgb(90 185 255 / 0.18);
+}
+
+.kiosk-facet__bloom,
+.kiosk-facet__face,
+.kiosk-facet__mark {
+  pointer-events: none;
+}
+
+.kiosk-facet__bloom {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: var(--facet-bloom);
+  clip-path: var(--path);
+  filter: blur(18px);
+  opacity: 0.55;
+}
+
+.kiosk-facet__face {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  clip-path: var(--path);
+  border: 0;
+  background:
+    linear-gradient(155deg, var(--facet-fill-hi) 0%, transparent 48%),
+    var(--facet-fill);
+  box-shadow: var(--facet-glow);
+  transition: background 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
+}
+
+.kiosk-facet__mark {
+  position: absolute;
+  z-index: 2;
+  width: calc(var(--cut) * 0.34);
+  height: calc(var(--cut) * 0.34);
+  background: var(--facet-mark);
+  filter: blur(0.6px);
+}
+
+.kiosk-facet__mark--ne {
+  top: 0;
+  right: 0;
+  clip-path: polygon(22% 0, 100% 0, 100% 78%);
+}
+
+.kiosk-facet__mark--sw {
+  bottom: 0;
+  left: 0;
+  clip-path: polygon(0 22%, 0 100%, 78% 100%);
+}
+
+.kiosk-facet__label {
+  position: relative;
+  z-index: 3;
+  max-width: 100%;
+  text-shadow:
+    0 0 16px rgb(120 210 255 / 0.4),
+    0 1px 10px rgb(0 8 24 / 0.55);
+}
+
+@supports (corner-shape: bevel) {
+  .kiosk-facet__bloom {
+    display: none;
+  }
+
+  .kiosk-facet__face {
+    clip-path: none;
+    border-radius: 0 var(--cut) 0 var(--cut);
+    corner-shape: bevel;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .kiosk-facet:hover {
+    --facet-fill: rgb(90 180 255 / 0.28);
+    --facet-fill-hi: rgb(180 235 255 / 0.18);
+    --facet-glow:
+      0 0 34px 6px rgb(145 225 255 / 0.55),
+      0 0 64px 0 rgb(95 195 255 / 0.34);
+  }
+
+  .kiosk-facet-ghost:hover {
+    --facet-fill: rgb(90 175 245 / 0.16);
+    --facet-fill-hi: rgb(170 230 255 / 0.1);
+    --facet-glow:
+      0 0 24px 4px rgb(145 225 255 / 0.34),
+      0 0 44px 0 rgb(90 185 255 / 0.2);
+  }
 }
 
 @property --q-wave {
@@ -78,7 +249,6 @@ button:focus-visible,
   max-width: min(70ch, 88%);
   overflow: visible;
   padding-block: 0.14em;
-  font-variation-settings: "wght" 600;
   text-shadow: 0 2px 28px rgba(2, 8, 22, 0.55);
   animation: q-wave-walk 16s ease-in-out infinite alternate;
 }
@@ -88,7 +258,6 @@ button:focus-visible,
   font-family: var(--font-display);
   font-size: 2.7rem;
   font-weight: 200;
-  font-variation-settings: "wght" 200;
   line-height: 1.18;
   letter-spacing: -0.015em;
   text-wrap: pretty;
@@ -371,7 +540,6 @@ button:focus-visible,
   font-family: var(--font-display);
   font-size: 2.1rem;
   font-weight: 200;
-  font-variation-settings: "wght" 200;
   line-height: 1.22;
   letter-spacing: -0.015em;
   text-wrap: pretty;

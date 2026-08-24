@@ -29,16 +29,16 @@ export function Starfield() {
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       }
       const g = ctx.createRadialGradient(w * 0.5, h * 0.38, 20, w * 0.5, h * 0.5, Math.max(w, h) * 0.78)
-      g.addColorStop(0, '#2a5cb8')
-      g.addColorStop(0.32, '#163a88')
-      g.addColorStop(0.68, '#0c2460')
-      g.addColorStop(1, '#071433')
+      g.addColorStop(0, '#2e3a7a')
+      g.addColorStop(0.32, '#1c2158')
+      g.addColorStop(0.68, '#12143c')
+      g.addColorStop(1, '#0a0c22')
       ctx.fillStyle = g
       ctx.fillRect(0, 0, w, h)
 
       const arch = ctx.createRadialGradient(w * 0.5, h * -0.05, 10, w * 0.5, h * 0.2, w * 0.55)
-      arch.addColorStop(0, 'rgba(90, 210, 255, 0.22)')
-      arch.addColorStop(0.55, 'rgba(40, 120, 220, 0.08)')
+      arch.addColorStop(0, 'rgba(200, 219, 232, 0.18)')
+      arch.addColorStop(0.55, 'rgba(88, 84, 164, 0.1)')
       arch.addColorStop(1, 'transparent')
       ctx.fillStyle = arch
       ctx.fillRect(0, 0, w, h)

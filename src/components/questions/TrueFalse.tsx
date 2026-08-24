@@ -10,12 +10,14 @@ export function TrueFalse({
   revealed,
   correctIsTrue,
   onPick,
+  falseLabel = ui.false,
 }: {
   fact: Text
   picked: boolean | null
   revealed: boolean
   correctIsTrue: boolean
   onPick: (value: boolean) => void
+  falseLabel?: Text
 }) {
   const { tx } = useLocale()
   return (
@@ -36,7 +38,7 @@ export function TrueFalse({
               selected && !revealed ? 'answer-card-held' : ''
             }`}
           >
-            <span className="answer-label">{tx(value ? ui.true : ui.false)}</span>
+            <span className="answer-label">{tx(value ? ui.true : falseLabel)}</span>
             {revealed && isCorrect ? (
               <AnswerFact className="min-h-0" text={tx(fact)} />
             ) : null}

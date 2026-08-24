@@ -19,8 +19,8 @@ async function startMission(page: Page, missionId: (typeof MISSIONS)[number]) {
     localStorage.setItem('orbita-rossii:missions', JSON.stringify(shown))
   }, MISSIONS.filter((id) => id !== missionId))
   await page.goto('/')
-  await page.getByTestId('start').click()
-  await expect(page.getByTestId('restart')).toBeVisible({ timeout: 12000 })
+  await page.getByTestId('mode-russia').click()
+  await expect(page.getByTestId('question-panel')).toBeVisible({ timeout: 12000 })
 }
 
 test('match draws a line, can disconnect, then lock in', async ({ page }) => {
