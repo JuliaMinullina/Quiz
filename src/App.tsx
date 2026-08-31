@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence } from 'motion/react'
 import { modeById } from './content/modes'
 import { quizSetById } from './content/quizSets'
+import { teacherSetById } from './content/quizzes/teacher'
 import { ui } from './content/ui'
-import type { BodyId, ModeId, QuizModeId } from './content/types'
+import type { BodyId, ModeId, QuizModeId, TeacherPortraitId } from './content/types'
 import { BodyField, ModeOverlay } from './components/BodyField'
 import { BrandMark } from './components/BrandMark'
 import { BrandPattern } from './components/BrandPattern'
@@ -13,21 +14,21 @@ import { KioskButton } from './components/KioskButton'
 import { Starfield } from './components/Starfield'
 import { Aurora } from './components/Aurora'
 import { LocaleProvider, useLocale } from './lib/locale'
-import { drawBodyId, drawQuoteId, drawSetId } from './lib/session'
+import { resolvePortrait } from './lib/portrait'
+import { drawBodyId, drawQuoteId, drawSetId, drawTeacherSetId } from './lib/session'
 import { HomeCopy } from './screens/HomeCopy'
 import { QuestionScreen } from './screens/QuestionScreen'
 import { QuoteScreen } from './screens/QuoteScreen'
-import { StubScreen } from './screens/StubScreen'
+import { PortraitScreen } from './screens/PortraitScreen'
 
-const ZOOM_MS = 3800 // planet approach, then first question or stub
+const ZOOM_MS = 3800 // planet approach, then first question
 
 type Phase =
   | { name: 'home' }
-  | { name: 'zoom'; modeId: QuizModeId; bodyId: BodyId; setId: string }
-  | { name: 'zoom'; modeId: 'teacher'; bodyId: BodyId }
-  | { name: 'ask'; modeId: QuizModeId; bodyId: BodyId; setId: string; index: number }
+  | { name: 'zoom'; modeId: ModeId; bodyId: BodyId; setId: string }
+  | { name: 'ask'; modeId: ModeId; bodyId: BodyId; setId: string; index: number; picks: TeacherPortraitId[] }
   | { name: 'quote'; modeId: QuizModeId; quoteId: string }
-  | { name: 'stub'; modeId: 'teacher'; bodyId: BodyId }
+  | { name: 'portrait'; portraitId: TeacherPortraitId }
 
 function isQuizMode(id: ModeId): id is QuizModeId {
   return id !== 'teacher'
@@ -37,15 +38,14 @@ function Kiosk() {
   const { tx } = useLocale()
   const [phase, setPhase] = useState<Phase>({ name: 'home' })
 
-  const selectedId =
-    phase.name === 'zoom' || phase.name === 'ask' || phase.name === 'stub' ? phase.bodyId : null
+  const selectedId = phase.name === 'zoom' || phase.name === 'ask' ? phase.bodyId : null
 
   const fieldMode =
     phase.name === 'home'
       ? 'constellation'
       : phase.name === 'zoom'
         ? 'zoom'
-        : phase.name === 'ask' || phase.name === 'stub'
+        : phase.name === 'ask'
           ? 'ask'
           : 'hidden'
 
@@ -54,16 +54,13 @@ function Kiosk() {
   useEffect(() => {
     if (phase.name !== 'zoom') return
     const id = window.setTimeout(() => {
-      if (phase.modeId === 'teacher') {
-        setPhase({ name: 'stub', modeId: 'teacher', bodyId: phase.bodyId })
-        return
-      }
       setPhase({
         name: 'ask',
         modeId: phase.modeId,
         bodyId: phase.bodyId,
         setId: phase.setId,
         index: 0,
+        picks: [],
       })
     }, ZOOM_MS)
     return () => window.clearTimeout(id)
@@ -71,19 +68,34 @@ function Kiosk() {
 
   function begin(modeId: ModeId) {
     const bodyId = drawBodyId()
-    if (!isQuizMode(modeId)) {
-      setPhase({ name: 'zoom', modeId, bodyId })
-      return
-    }
-    setPhase({ name: 'zoom', modeId, bodyId, setId: drawSetId(modeId) })
+    const setId = isQuizMode(modeId) ? drawSetId(modeId) : drawTeacherSetId()
+    setPhase({ name: 'zoom', modeId, bodyId, setId })
   }
 
   function goHome() {
     setPhase({ name: 'home' })
   }
 
-  function nextQuestion() {
+  function nextQuestion(picked?: TeacherPortraitId) {
     if (phase.name !== 'ask') return
+    if (phase.modeId === 'teacher') {
+      if (!picked) return
+      const picks = [...phase.picks, picked]
+      const questions = teacherSetById(phase.setId).questions
+      if (phase.index >= questions.length - 1) {
+        setPhase({ name: 'portrait', portraitId: resolvePortrait(picks) })
+        return
+      }
+      setPhase({
+        name: 'ask',
+        modeId: 'teacher',
+        bodyId: phase.bodyId,
+        setId: phase.setId,
+        index: phase.index + 1,
+        picks,
+      })
+      return
+    }
     const questions = quizSetById(phase.modeId, phase.setId).questions
     if (phase.index >= questions.length - 1) {
       setPhase({ name: 'quote', modeId: phase.modeId, quoteId: drawQuoteId() })
@@ -95,18 +107,26 @@ function Kiosk() {
       bodyId: phase.bodyId,
       setId: phase.setId,
       index: phase.index + 1,
+      picks: phase.picks,
     })
   }
 
-  const askSet = phase.name === 'ask' ? quizSetById(phase.modeId, phase.setId) : null
+  const askSet =
+    phase.name === 'ask'
+      ? phase.modeId === 'teacher'
+        ? teacherSetById(phase.setId)
+        : quizSetById(phase.modeId, phase.setId)
+      : null
   const askQuestion = askSet?.questions[phase.name === 'ask' ? phase.index : 0]
 
   return (
     <div className="relative isolate h-full w-full overflow-hidden">
       <Starfield />
       <BrandPattern />
-      {phase.name === 'quote' && <Aurora />}
-      {phase.name !== 'quote' && <BodyField mode={fieldMode} selectedId={selectedId} />}
+      {(phase.name === 'quote' || phase.name === 'portrait') && <Aurora />}
+      {phase.name !== 'quote' && phase.name !== 'portrait' && (
+        <BodyField mode={fieldMode} selectedId={selectedId} />
+      )}
       {phase.name === 'home' && <HomeCopy onStart={begin} />}
       {phase.name === 'zoom' && (
         <div className="absolute right-[4.2vmin] top-[3.2vmin] z-[55]">
@@ -127,11 +147,11 @@ function Kiosk() {
           onRestart={goHome}
         />
       )}
-      {phase.name === 'stub' && (
-        <StubScreen title={tx(modeById('teacher').title)} onHome={goHome} />
-      )}
       {phase.name === 'quote' && (
         <QuoteScreen quoteId={phase.quoteId} onAgain={() => begin(phase.modeId)} onRestart={goHome} />
+      )}
+      {phase.name === 'portrait' && (
+        <PortraitScreen portraitId={phase.portraitId} onAgain={() => begin('teacher')} onRestart={goHome} />
       )}
       <BrandMark
         current={phase.name === 'ask' ? phase.index + 1 : undefined}

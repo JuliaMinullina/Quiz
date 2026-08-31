@@ -138,14 +138,31 @@ test('neanderthal mode reaches questions and can leave', async ({ page }) => {
   await expect(page.getByTestId('mode-russia')).toBeVisible()
 })
 
-test('teacher mode shows a stub then returns home', async ({ page }) => {
+test('teacher mode reaches a portrait then can play again', async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.clear()
   })
   await page.goto('/')
   await page.getByTestId('mode-teacher').click()
-  await expect(page.getByTestId('stub')).toBeVisible({ timeout: 12000 })
-  await page.getByTestId('home').click()
+  await expect(page.getByTestId('mode-overlay')).toContainText('Какой вы педагог')
+  await expect(page.getByTestId('mode-overlay')).toContainText('В конце — портрет')
+  await expect(page.locator('button[data-testid^="choice-"]').first()).toBeVisible({ timeout: 12000 })
+  await expect(page.getByTestId('tf-true')).toHaveCount(0)
+  await page.locator('button[data-testid^="choice-"]').first().click()
+  await expect(page.locator('.answer-fact')).toBeVisible()
+  await expect(page.getByTestId('next')).toBeVisible()
+  await page.getByTestId('next').click()
+  for (let i = 0; i < 4; i += 1) {
+    await page.locator('button[data-testid^="choice-"]').first().click()
+    await expect(page.getByTestId('next')).toBeVisible()
+    await page.getByTestId('next').click()
+  }
+  await expect(page.getByTestId('portrait')).toBeVisible()
+  await expect(page.getByTestId('portrait-star-task')).toHaveAttribute('data-lit', 'true')
+  await expect(page.getByTestId('again')).toBeVisible()
+  await page.getByTestId('again').click()
+  await expect(page.locator('button[data-testid^="choice-"]').first()).toBeVisible({ timeout: 12000 })
+  await page.getByTestId('restart').click()
   await expect(page.getByTestId('mode-russia')).toBeVisible()
 })
 

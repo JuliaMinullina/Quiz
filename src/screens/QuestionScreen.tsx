@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Question, Text } from '../content/types'
+import type { PlayQuestion, TeacherPortraitId, Text } from '../content/types'
 import { ui } from '../content/ui'
 import { useLocale } from '../lib/locale'
 import { KioskButton } from '../components/KioskButton'
@@ -15,9 +15,9 @@ export function QuestionScreen({
   onNext,
   onRestart,
 }: {
-  question: Question
+  question: PlayQuestion
   title: Text
-  onNext: () => void
+  onNext: (picked?: TeacherPortraitId) => void
   onRestart: () => void
 }) {
   const { tx } = useLocale()
@@ -55,11 +55,26 @@ export function QuestionScreen({
     (question.kind === 'match' && Object.keys(map).length === 4) ||
     (question.kind === 'order' && slots.every(Boolean))
 
+  function goNext() {
+    if (question.kind === 'situation' && choiceId) {
+      const option = question.options.find((item) => item.id === choiceId)
+      if (option) onNext(option.portraitId)
+      return
+    }
+    onNext()
+  }
+
   const compact =
     question.kind === 'choice4' ||
     question.kind === 'odd' ||
     question.kind === 'who' ||
-    question.kind === 'trueFalse'
+    question.kind === 'trueFalse' ||
+    question.kind === 'situation'
+
+  const situationFact =
+    question.kind === 'situation'
+      ? question.options.find((item) => item.id === choiceId)?.fact
+      : undefined
 
   return (
     <div className="relative z-40 flex h-full flex-col px-[4.2vmin] pb-[3vmin] pt-[2.8vmin]">
@@ -82,14 +97,19 @@ export function QuestionScreen({
           text={tx(question.prompt)}
         />
         <div className={compact ? 'h-[min(56vmin,66%)] min-h-[32vmin] w-full shrink-0' : 'min-h-0 flex-1'}>
-          {question.kind === 'choice4' || question.kind === 'odd' || question.kind === 'who' || question.kind === 'map' ? (
+          {question.kind === 'choice4' ||
+          question.kind === 'odd' ||
+          question.kind === 'who' ||
+          question.kind === 'map' ||
+          question.kind === 'situation' ? (
             <ChoiceGrid
               options={question.options}
-              fact={question.fact}
+              fact={question.kind === 'situation' ? (situationFact ?? question.options[0]!.fact) : question.fact}
               mapRegion={question.kind === 'map' ? question.mapRegion : undefined}
               selectedId={choiceId}
               revealed={revealed}
               onPick={onChoice}
+              revealSelected={question.kind === 'situation'}
             />
           ) : null}
           {question.kind === 'trueFalse' ? (
@@ -129,7 +149,7 @@ export function QuestionScreen({
           </KioskButton>
         ) : null}
         {revealed ? (
-          <KioskButton data-testid="next" onClick={onNext}>
+          <KioskButton data-testid="next" onClick={goNext}>
             {tx(ui.next)}
           </KioskButton>
         ) : null}

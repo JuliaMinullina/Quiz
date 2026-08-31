@@ -34,6 +34,10 @@ export type NeanderthalSetId = 'neo-finds' | 'neo-craft' | 'neo-genome' | 'neo-d
 
 export type CyberSetId = 'cyber-passwords' | 'cyber-phishing' | 'cyber-device' | 'cyber-data'
 
+export type TeacherSetId = 'teacher-lesson' | 'teacher-children' | 'teacher-class' | 'teacher-after'
+
+export type TeacherPortraitId = 'task' | 'ethos' | 'personal' | 'community' | 'subject'
+
 export type QuoteId =
   | 'lomonosov'
   | 'tsiolkovsky'
@@ -98,11 +102,37 @@ export type OrderQuestion = {
   items: readonly OrderItem[]
 }
 
+export type SituationOption = {
+  id: string
+  label: Text
+  portraitId: TeacherPortraitId
+  fact: Text
+}
+
+export type SituationQuestion = {
+  kind: 'situation'
+  prompt: Text
+  options: readonly SituationOption[]
+}
+
 export type Question =
   | ChoiceQuestion
   | TrueFalseQuestion
   | MatchQuestion
   | OrderQuestion
+
+export type PlayQuestion = Question | SituationQuestion
+
+export type TeacherSet = {
+  id: TeacherSetId
+  questions: readonly SituationQuestion[]
+}
+
+export type TeacherPortrait = {
+  id: TeacherPortraitId
+  name: Text
+  text: Text
+}
 
 export type CelestialBody = {
   id: BodyId
@@ -121,7 +151,7 @@ export type Mission = QuizSet & {
   bodyId: BodyId
 }
 
-export type ModeKind = 'quiz' | 'stub'
+export type ModeKind = 'quiz' | 'portrait'
 
 export type Mode = {
   id: ModeId

@@ -4,6 +4,8 @@ import { KioskButton } from '../KioskButton'
 import { RussiaMap } from '../RussiaMap'
 import { AnswerFact } from './AnswerFact'
 
+type GridOption = Pick<ChoiceOption, 'id' | 'label'> & { correct?: boolean }
+
 export function ChoiceGrid({
   options,
   fact,
@@ -11,13 +13,15 @@ export function ChoiceGrid({
   selectedId,
   revealed,
   onPick,
+  revealSelected = false,
 }: {
-  options: readonly ChoiceOption[]
+  options: readonly GridOption[]
   fact: Text
   mapRegion?: MapRegion
   selectedId: string | null
   revealed: boolean
   onPick: (id: string) => void
+  revealSelected?: boolean
 }) {
   const { tx } = useLocale()
 
@@ -25,8 +29,8 @@ export function ChoiceGrid({
     <div className="answer-grid answer-grid--quad grid h-full min-h-0 w-full grid-cols-2 grid-rows-2 gap-[2.15vmin]">
       {options.map((opt) => {
         const selected = selectedId === opt.id
-        const glow = revealed && opt.correct
-        const dim = revealed && selected && !opt.correct
+        const glow = revealed && (revealSelected ? selected : Boolean(opt.correct))
+        const dim = !revealSelected && revealed && selected && !opt.correct
         return (
           <KioskButton
             key={opt.id}
@@ -40,9 +44,7 @@ export function ChoiceGrid({
             }`}
           >
             <span className="answer-label">{tx(opt.label)}</span>
-            {revealed && opt.correct ? (
-              <AnswerFact className="min-h-0" text={tx(fact)} />
-            ) : null}
+            {glow ? <AnswerFact className="min-h-0" text={tx(fact)} /> : null}
           </KioskButton>
         )
       })}

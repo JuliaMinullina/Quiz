@@ -1,0 +1,718 @@
+import { act, situation } from '../copy'
+import type { TeacherSet, TeacherSetId } from '../types'
+
+export const TEACHER_SET_IDS = [
+  'teacher-lesson',
+  'teacher-children',
+  'teacher-class',
+  'teacher-after',
+] as const satisfies readonly TeacherSetId[]
+
+export const teacherSets: readonly TeacherSet[] = [
+  {
+    id: 'teacher-lesson',
+    questions: [
+      situation(
+        'На объяснении обыкновенных дробей Дима уже третью минуту смотрит в окно. Класс слушает. Что сделаете?',
+        'While you explain ordinary fractions, Dima has been looking out of the window for three minutes. The class is listening. What do you do?',
+        [
+          act(
+            'task',
+            'Остановить объяснение. Дать всему классу три примера на доске — без дробей их не решить',
+            'Stop the explanation. Give the whole class three examples on the board — they cannot be done without fractions',
+            'Примеры решает весь класс. Без дробей их не закрыть, и объяснение перестаёт быть фоном за окном.',
+            'The whole class solves the examples. They cannot be finished without fractions, and the explanation stops being background noise by the window.',
+          ),
+          act(
+            'ethos',
+            'Сказать: «Дима, сейчас слушаем. Потом считаем»',
+            'Say: “Dima, we listen now. Then we calculate”',
+            '«Сейчас слушаем» — общее правило кабинета. Дима возвращается в тот же ритм, что и все.',
+            '“We listen now” is the room’s shared rule. Dima comes back into the same rhythm as everyone else.',
+          ),
+          act(
+            'personal',
+            'Подсесть к Диме и дать ему те же дроби, только с меньшими числами',
+            'Sit beside Dima and give him the same fractions, only with smaller numbers',
+            'Дима остаётся при общей теме. Ему дают её в числах, которые он уже считает.',
+            'Dima stays with the shared topic. He is given it in numbers he can already handle.',
+          ),
+          act(
+            'community',
+            'Попросить соседа по парте объяснить ему это своими словами',
+            'Ask the neighbour at the desk to explain it to him in his own words',
+            'Сосед проговаривает правило второй раз. Дима слышит человека рядом.',
+            'The neighbour says the rule a second time. Dima hears the person next to him.',
+          ),
+        ],
+      ),
+      situation(
+        'Вы написали на доске 7×8=54. Класс уже хихикает. Что дальше?',
+        'You have written 7×8=54 on the board. The class is already giggling. What next?',
+        [
+          act(
+            'task',
+            'Оставить 54 и спросить: где считали не так?',
+            'Leave the 54 and ask: where did the counting go wrong?',
+            'Ошибка на доске становится общим заданием. Все видят одно и то же и ищут, где сбились.',
+            'The mistake on the board becomes a shared task. Everyone sees the same thing and looks for where it went wrong.',
+          ),
+          act(
+            'ethos',
+            'Стереть, написать 56 и идти дальше по плану',
+            'Rub it out, write 56 and go on with the plan',
+            'Урок возвращают к таблице и к следующему примеру. Хихиканье само сходит.',
+            'The lesson is brought back to the table and the next example. The giggling dies down on its own.',
+          ),
+          act(
+            'personal',
+            'Спросить того, кто не хихикает: как бы ты это проверил?',
+            'Ask the one who is not giggling: how would you check this?',
+            'Вопрос тому, кто молчит. Он часто уже считает 7×8 и может сказать, как проверить.',
+            'The question goes to the one who is silent. They are often already counting 7×8 and can say how to check it.',
+          ),
+          act(
+            'subject',
+            'Спросить, почему 56 и 54 путают чаще, чем 7×7',
+            'Ask why 56 and 54 get mixed up more often than 7×7',
+            'В таблице умножения соседние ответы легко спутать. Это свойство самих чисел.',
+            'In the multiplication table neighbouring answers are easy to mix up. That is a property of the numbers themselves.',
+          ),
+        ],
+      ),
+      situation(
+        'Класс решает пять линейных уравнений. Алина закрыла тетрадь: все пять уже стоят. Что сделаете?',
+        'The class is solving five linear equations. Alina has closed her notebook: all five are already done. What do you do?',
+        [
+          act(
+            'task',
+            'Дать ей шестое — с параметром, которого в этих пяти не было',
+            'Give her a sixth — with a parameter that was not in those five',
+            'Пять одинаковых уравнений для неё уже кончились. Параметр делает ту же тему снова работой.',
+            'Five equations of the same kind are already finished for her. A parameter makes the same topic work again.',
+          ),
+          act(
+            'ethos',
+            'Попросить подождать остальных: так на этом уроке принято',
+            'Ask her to wait for the others: that is how this lesson is run',
+            'Пока все на пяти уравнениях, кабинет работает как одно место.',
+            'While everyone is on the five equations, the room works as one place.',
+          ),
+          act(
+            'community',
+            'Пусть разберёт у доски первое уравнение для тех, кто ещё считает',
+            'Let her go through the first equation at the board for those still calculating',
+            'Объяснить первое уравнение — отдельная работа. Класс слышит Алину у доски.',
+            'Explaining the first equation is a separate piece of work. The class hears Alina at the board.',
+          ),
+          act(
+            'subject',
+            'Спросить, где такие уравнения встречаются, кроме учебника',
+            'Ask where such equations appear, other than in the textbook',
+            'Линейным уравнением описывают смесь, движение, цену. Иначе тема остаётся пятью строчками в тетради.',
+            'A linear equation describes a mixture, motion, a price. Otherwise the topic stays five lines in a notebook.',
+          ),
+        ],
+      ),
+      situation(
+        'В самостоятельной по алгебре у Пети все преобразования верные, а в ответе 3 вместо −3. Что сделаете?',
+        'In an algebra test Petya’s transformations are all correct, but the answer is 3 instead of −3. What do you do?',
+        [
+          act(
+            'task',
+            'Вернуть Пете тетрадь и сказать: найди, где потерялся минус',
+            'Give Petya the notebook back and say: find where the minus was lost',
+            'Ход верный, знак нет. Петя сам ищет строку.',
+            'The method is right, the sign is not. Petya looks for the line himself.',
+          ),
+          act(
+            'personal',
+            'Сесть рядом и разобрать только строку, где пропал знак',
+            'Sit beside him and look only at the line where the sign vanished',
+            'Всю самостоятельную переписывать незачем. Разбирают одну строку, которая у этого ученика ломается.',
+            'There is no need to rewrite the whole paper. They look at the one line that breaks for this student.',
+          ),
+          act(
+            'community',
+            'Вынести на доску и разобрать с классом, как проверять знак в каждой строке',
+            'Put it on the board and go through with the class how to check the sign in each line',
+            'Проверка знака нужна всему классу. На доске появляется общее правило.',
+            'Checking the sign is needed by the whole class. A shared rule appears on the board.',
+          ),
+          act(
+            'subject',
+            'Напомнить: в алгебре 3 и −3 — разные ответы',
+            'Remind them: in algebra 3 and −3 are different answers',
+            '3 и −3 — разные числа. Знак входит в ответ так же, как цифра.',
+            '3 and −3 are different numbers. The sign belongs to the answer as much as the digit.',
+          ),
+        ],
+      ),
+      situation(
+        'В конце урока геометрии кто-то спрашивает: «а зачем нам эти треугольники?» Что ответите?',
+        'At the end of a geometry lesson someone asks: “why do we need these triangles?” What do you answer?',
+        [
+          act(
+            'ethos',
+            '«Сначала определение, потом каждый чертит свой. Так устроен этот урок»',
+            '“First the definition, then each person draws their own. That is how this lesson is built”',
+            'Сначала определение, потом свой чертёж — так на этом уроке отвечают на «зачем».',
+            'First the definition, then each person’s own drawing: that is how this lesson answers “why”.',
+          ),
+          act(
+            'personal',
+            'Спросить его: где ты уже видел треугольник — в крыше, на карте, в игре?',
+            'Ask him: where have you already seen a triangle — on a roof, on a map, in a game?',
+            'Смысл ищут в чертеже, который этот человек уже делал.',
+            'The meaning is sought in a drawing this person has already made.',
+          ),
+          act(
+            'community',
+            'Пусть класс за минуту назовёт, кому треугольники нужны на работе',
+            'Let the class take a minute to name who needs triangles at work',
+            'Строитель, навигатор, архитектор. Класс сам называет профессии.',
+            'A builder, a navigator, an architect. The class itself names the jobs.',
+          ),
+          act(
+            'subject',
+            'Показать на ферме моста: без треугольника конструкция не стоит',
+            'Show it on a bridge truss: without a triangle the structure does not stand',
+            'Жёсткость треугольника — факт геометрии. Крыша и ферма моста держатся на этом.',
+            'The rigidity of a triangle is a fact of geometry. A roof and a bridge truss stand on it.',
+          ),
+        ],
+      ),
+    ],
+  },
+  {
+    id: 'teacher-children',
+    questions: [
+      situation(
+        'Тимур в классе третью неделю. На опросе по истории все кричат даты с места, он молчит. Что сделаете?',
+        'Timur has been in the class for three weeks. In the history recitation everyone shouts dates from their seats; he stays silent. What do you do?',
+        [
+          act(
+            'personal',
+            'После опроса спросить его одного: тот же вопрос, без крика класса',
+            'After the recitation ask him alone: the same question, without the class shouting',
+            'Он в классе третью неделю и в крик с места не лезет. Тот же вопрос задают ему одному.',
+            'He has been in the class for three weeks and does not join the shouting from the seats. The same question is asked of him alone.',
+          ),
+          act(
+            'ethos',
+            'Ответ хором с места не принимаем. Отвечает тот, кого спросили',
+            'We do not accept a chorus from the seats. The one who was asked answers',
+            'Хор удобен учителю: не видно, кто знает. Правило одно на всех: отвечает тот, кого вызвали.',
+            'A chorus is convenient for the teacher: you cannot see who knows. The rule is the same for everyone: the one who was called answers.',
+          ),
+          act(
+            'community',
+            'Попросить соседа повторить вопрос. Дату пусть Тимур скажет сам',
+            'Ask a neighbour to repeat the question. Let Timur name the date himself',
+            'Повторить вопрос — помощь одноклассника. Дату за Тимура не называют.',
+            'Repeating the question is a classmate’s help. The date is not named for Timur.',
+          ),
+          act(
+            'subject',
+            'Вынести на доску ленту: кто за кем. Дату с места не кричать',
+            'Put a timeline on the board: who follows whom. Do not shout the date from the seats',
+            'В истории важно, кто за кем. Лента на доске показывает порядок.',
+            'In history what matters is who follows whom. A timeline on the board shows the order.',
+          ),
+        ],
+      ),
+      situation(
+        'У Сони третий раз нет домашнего по русскому: упражнение 142 в рабочей тетради. Что сделаете?',
+        'Sonia has no Russian homework for the third time: exercise 142 in the workbook. What do you do?',
+        [
+          act(
+            'task',
+            'На уроке дать ей два предложения из того же упражнения',
+            'In the lesson give her two sentences from the same exercise',
+            'Домашнего нет в тетради. Два предложения сейчас показывают, где она спотыкается.',
+            'The homework is not in the notebook. Two sentences now show where she stumbles.',
+          ),
+          act(
+            'personal',
+            'После звонка спросить наедине: не успела, не поняла или дома негде сесть?',
+            'After the bell ask in private: no time, did not understand, or nowhere to sit at home?',
+            '«Опять нет домашнего» — три разные истории. Если дома нет стола, упражнение 142 тут ни при чём.',
+            '“No homework again” is three different stories. If there is no table at home, exercise 142 is beside the point.',
+          ),
+          act(
+            'community',
+            'Написать маме, какие два предложения разобрать вечером',
+            'Write to her mother which two sentences to look at in the evening',
+            'Семья может помочь с двумя предложениями. Жалоба в чат этого не делает.',
+            'The family can help with two sentences. A complaint in the chat does not.',
+          ),
+          act(
+            'subject',
+            'Вместо 142 попросить три своих примера на то же правило',
+            'Instead of 142, ask for three examples of her own on the same rule',
+            'Правило орфографии можно показать своими тремя примерами. Номер упражнения для этого не обязателен.',
+            'A spelling rule can be shown in three examples of her own. The exercise number is not required for that.',
+          ),
+        ],
+      ),
+      situation(
+        'На самостоятельной Кирилл уже на четвёртой задаче, Ника ещё на первой. Что сделаете?',
+        'In independent work Kirill is already on the fourth problem, Nika still on the first. What do you do?',
+        [
+          act(
+            'task',
+            'Сказать Кириллу: реши ту же задачу другим способом. Нику не трогать',
+            'Tell Kirill: solve the same problem another way. Leave Nika',
+            'Другой способ на той же задаче занимает Кирилла. Ника остаётся на первой.',
+            'Another method on the same problem occupies Kirill. Nika stays on the first.',
+          ),
+          act(
+            'ethos',
+            'Не давать Кириллу другое: одна самостоятельная на всех, пока не выйдет время',
+            'Give Kirill nothing extra: one paper for everyone until time is up',
+            'Самостоятельная общая. Кто закончил раньше, проверяет себя.',
+            'The paper is shared. Whoever finishes early checks themselves.',
+          ),
+          act(
+            'community',
+            'Попросить Кирилла задать Нике один вопрос по её задаче. Решение за неё не писать',
+            'Ask Kirill to put one question to Nika about her problem. Not to write the solution for her',
+            'Один вопрос соседа оставляет обоих при своей работе.',
+            'One question from a neighbour leaves both with their own work.',
+          ),
+          act(
+            'subject',
+            'Сказать вслух: в математике часто два законных пути к одной задаче',
+            'Say aloud: in mathematics there are often two lawful paths to one problem',
+            'Два решения одной задачи — обычное дело в математике.',
+            'Two solutions to one problem are ordinary in mathematics.',
+          ),
+        ],
+      ),
+      situation(
+        'На групповой работе по биологии Илья закрыл уши руками: в кабинете слишком громко. Что сделаете?',
+        'In group work in biology Ilya has covered his ears with his hands: the room is too loud. What do you do?',
+        [
+          act(
+            'task',
+            'Пересадить его к окну с тем же листом про клетку',
+            'Move him to the window with the same sheet on the cell',
+            'Лист про клетку остаётся. Меняется место.',
+            'The sheet on the cell stays. The place changes.',
+          ),
+          act(
+            'ethos',
+            'На минуту остановить всех: в этом кабинете так не кричим',
+            'Stop everyone for a minute: we do not shout like that in this room',
+            'Громкость — общее правило кабинета. Группам нужен голос, который можно вынести.',
+            'Volume is a shared rule of the room. Groups need a voice that can be borne.',
+          ),
+          act(
+            'personal',
+            'Предложить место у стены и вернуться к его листу про клетку',
+            'Offer a place by the wall and go back to his sheet on the cell',
+            'Сначала место, где он снова слышит задание, потом клетка, ядро, мембрана.',
+            'First a place where he can hear the task again, then the cell, the nucleus, the membrane.',
+          ),
+          act(
+            'subject',
+            'Пусть группа Ильи запишет наблюдения в тетрадь',
+            'Let Ilya’s group write observations in the notebook',
+            'Наблюдение клетки можно записать. Это биология.',
+            'Observation of a cell can be written down. That is biology.',
+          ),
+        ],
+      ),
+      situation(
+        'Мама Артёма пишет в чат класса: «вы занимаетесь только отличниками, сыну снова двойка». Что сделаете?',
+        'Artyom’s mother writes in the class chat: “you only work with the top students, my son has another two.” What do you do?',
+        [
+          act(
+            'task',
+            'Принести на встречу его последнюю самостоятельную: вот строка, которая вышла',
+            'Bring his last independent paper to a meeting: here is the line that worked',
+            'Спор в чате снимает конкретная работа. На столе лежит тетрадь.',
+            'A concrete paper takes apart the quarrel in the chat. A notebook lies on the table.',
+          ),
+          act(
+            'ethos',
+            'Ответить: оценка ставится по одной работе на всех',
+            'Reply: the mark is given on the same paper for everyone',
+            'Критерии одни. По ним ставится всем.',
+            'The criteria are the same. Everyone is marked by them.',
+          ),
+          act(
+            'personal',
+            'Оставить Артёма на пять минут после уроков: что уже выходит и что берём следующим',
+            'Keep Artyom for five minutes after lessons: what already works, and what we take next',
+            'Садятся с Артёмом над его тетрадью. Маме в чат про отличников не отвечают.',
+            'They sit with Artyom over his notebook. They do not answer the mother in the chat about top students.',
+          ),
+          act(
+            'community',
+            'Попросить маму прийти и вместе посмотреть тетрадь',
+            'Ask the mother to come and look at the notebook together',
+            'Тетрадь на столе у троих — учитель, ученик, мама.',
+            'A notebook on the table for three: teacher, student, mother.',
+          ),
+        ],
+      ),
+    ],
+  },
+  {
+    id: 'teacher-class',
+    questions: [
+      situation(
+        'С перемены в кабинет влетели Максим и Егор: спор из-за мяча. Максим не садится и кричит, Егор уже у парты. Урок литературы начался. Что сделаете?',
+        'Maxim and Egor have burst into the room from the break: a quarrel over a ball. Maxim will not sit down and is shouting; Egor is already at his desk. The literature lesson has begun. What do you do?',
+        [
+          act(
+            'task',
+            'На две минуты остановить урок. Спросить обоих, что случилось и кто что делает после звонка. Потом открыть текст',
+            'Stop the lesson for two minutes. Ask both what happened and who does what after the bell. Then open the text',
+            'Спор закрывают коротким разбором с ясным концом. Текст после этого ещё можно начать.',
+            'The quarrel is closed as a short walkthrough with a clear end. The text can still be started after that.',
+          ),
+          act(
+            'personal',
+            'Вывести Максима в коридор. Егору остаться. Классу открыть учебник на той же странице',
+            'Take Maxim into the corridor. Egor stays. The class opens the textbook at the same page',
+            'Максим не слышит класс, пока кричит. Егор уже сел. Класс при этом не сидит без дела.',
+            'Maxim cannot hear the class while he is shouting. Egor has already sat down. The class is not left with nothing to do.',
+          ),
+          act(
+            'community',
+            'Спросить класс, как здесь заканчивают такие споры',
+            'Ask the class how quarrels like this are ended here',
+            'Класс может назвать своё правило: мяч после звонка, извинение, кто убирает.',
+            'The class can name its own rule: the ball after the bell, an apology, who puts it away.',
+          ),
+          act(
+            'subject',
+            'Открыть рассказ: ссора героев на бумаге',
+            'Open the story: the heroes’ quarrel on paper',
+            'Литература как раз про то, как люди ссорятся и что из этого следует.',
+            'Literature is precisely about how people quarrel and what follows.',
+          ),
+        ],
+      ),
+      situation(
+        'На перемене кто-то снял Катю без спроса и хочет пустить кружок по классу. Что сделаете?',
+        'At break someone photographed Katya without asking and wants to pass the picture around the class. What do you do?',
+        [
+          act(
+            'task',
+            'Спросить класс: можно ли показывать чужую фотографию без согласия?',
+            'Ask the class: may one show someone else’s photograph without consent?',
+            'Вопрос «можно / нельзя» классу решать вслух. Решение — про этот снимок.',
+            'The question “allowed / not allowed” is for the class to settle aloud. The decision is about this picture.',
+          ),
+          act(
+            'ethos',
+            'Положить телефон на стол учителя и удалить снимок. Чужое лицо не рассылаем',
+            'Put the phone on the teacher’s desk and delete the picture. Another person’s face is not sent around',
+            'Правило кабинета одно на всех: чужое лицо без спроса не рассылают. Снимок убирают сразу.',
+            'The room’s rule is the same for everyone: another person’s face is not sent around without asking. The picture comes down at once.',
+          ),
+          act(
+            'community',
+            'Сначала отдельно с Катей и с тем, кто снял. Потом одно слово классу',
+            'First separately with Katya and with the one who took the picture. Then one word to the class',
+            'Катя и тот, кто снял, задеты по-разному. Сначала они, потом все остальные.',
+            'Katya and the one who took the picture are hurt in different ways. First them, then everyone else.',
+          ),
+          act(
+            'subject',
+            'Сказать: снимок остаётся в чужих телефонах, даже если его «уже удалили»',
+            'Say: the picture stays in other people’s phones even if it has “already been deleted”',
+            'Цифровой снимок копируется. Он уже не в одном телефоне.',
+            'A digital picture is copied. It is no longer in one phone.',
+          ),
+        ],
+      ),
+      situation(
+        'Сегодня линейка ко Дню космонавтики, а по плану у седьмого класса — инерция. Вчера задачу про тележку закрыли не все. Что сделаете?',
+        'Today there is an assembly for Cosmonautics Day, and year seven’s plan has inertia. Yesterday not everyone finished the trolley problem. What do you do?',
+        [
+          act(
+            'task',
+            'Оставить инерцию на примере старта ракеты',
+            'Keep inertia on the example of a rocket launch',
+            'Закон тот же. Пример с ракетой даёт задачу на сегодня.',
+            'The law is the same. A rocket example gives a task for today.',
+          ),
+          act(
+            'ethos',
+            'Идти на линейку с классом. Инерцию перенесём на следующий урок',
+            'Go to the assembly with the class. Inertia can wait until the next lesson',
+            'Линейка 12 апреля — общий календарь школы. Тему переносят на следующий час.',
+            'The assembly on 12 April is the school’s shared calendar. The topic moves to the next period.',
+          ),
+          act(
+            'personal',
+            'После линейки сесть с теми, кто вчера не закрыл тележку, и разобрать старт ракеты',
+            'After the assembly sit with those who did not finish the trolley yesterday, and take apart the rocket launch',
+            'Тем, у кого вчера тележка не вышла, тот же закон на старте ракеты.',
+            'For those who did not get the trolley yesterday, the same law at the rocket launch.',
+          ),
+          act(
+            'subject',
+            'На линейке разобрать перегрузки Гагарина: это и есть инерция',
+            'At the assembly take apart Gagarin’s g-forces: that is inertia',
+            'Инерция — сопротивление изменению движения. Перегрузки на старте «Востока» — тот же закон.',
+            'Inertia is resistance to a change in motion. The g-forces at the launch of Vostok are the same law.',
+          ),
+        ],
+      ),
+      situation(
+        'Коллега по параллели пишет: «у тебя 7 „Б“ сыплется на дробях, контрольная в пятницу». Это ваш класс. Что сделаете?',
+        'A colleague in the year group writes: “your 7B is falling apart on fractions, test on Friday.” It is your class. What do you do?',
+        [
+          act(
+            'task',
+            'На своём уроке разобрать одну типичную ошибку с дробями',
+            'In your own lesson take apart one typical fraction mistake',
+            'Одна устойчивая ошибка — сокращение, знак, приведение к общему знаменателю.',
+            'One stubborn mistake: cancelling, the sign, a common denominator.',
+          ),
+          act(
+            'ethos',
+            'Договориться, как готовимся всю неделю',
+            'Agree how you prepare all week',
+            'Контрольная в пятницу. Подготовка идёт по календарю двух учителей.',
+            'The test is on Friday. Preparation follows the calendar of two teachers.',
+          ),
+          act(
+            'personal',
+            'Взять двоих, кто путает сокращение, и начать с них',
+            'Take the two who mix up cancelling and start with them',
+            '«7 „Б“ сыплется» часто значит двое. Их и берут.',
+            '“7B is falling apart” often means two people. Those two are taken.',
+          ),
+          act(
+            'community',
+            'Сесть с коллегой на перемене и разделить: кто какие задания разбирает',
+            'Sit with the colleague at break and divide: who takes which exercises',
+            'Два учителя могут разделить упражнения.',
+            'Two teachers can divide the exercises.',
+          ),
+        ],
+      ),
+      situation(
+        'Семиклассники предлагают правило: в кабинете можно слушать музыку в наушниках, пока решаем сами. Что сделаете?',
+        'Year-seven students propose a rule: in this room you may listen to music on headphones while working alone. What do you do?',
+        [
+          act(
+            'ethos',
+            'Попробовать неделю и посмотреть, не срывается ли самостоятельная',
+            'Try it for a week and see whether independent work falls apart',
+            'Правило проверяют неделей. Если самостоятельная разваливается — отменяют.',
+            'A rule is tested by a week. If independent work falls apart, it is cancelled.',
+          ),
+          act(
+            'personal',
+            'Спросить каждого: кому тишина нужна, кому наушники правда помогают',
+            'Ask each person: who needs quiet, for whom headphones really help',
+            'Одним наушники мешают думать, другим помогают. Одно правило на всех здесь спорно.',
+            'For some, headphones get in the way of thinking; for others they help. One rule for everyone is in question here.',
+          ),
+          act(
+            'community',
+            'Принять правило вместе и написать на двери кабинета',
+            'Adopt the rule together and write it on the classroom door',
+            'Правило, которое написали сами, принадлежит классу.',
+            'A rule the class wrote itself belongs to the class.',
+          ),
+          act(
+            'subject',
+            'Проверить, как это ляжет на диктант, устный ответ, опыт',
+            'Check how this sits with a dictation, an oral answer, an experiment',
+            'Наушники возможны, пока все молча решают. Диктант, ответ у доски, опыт требуют тишины без наушников.',
+            'Headphones are possible while everyone is working in silence. A dictation, an answer at the board, an experiment need quiet without headphones.',
+          ),
+        ],
+      ),
+    ],
+  },
+  {
+    id: 'teacher-after',
+    questions: [
+      situation(
+        'К школьной конференции Катя несёт доклад про Исеть. В черновике — фото очистных и цитата мэра. Карты нет: ни истока, ни того, куда река впадает. Что сделаете?',
+        'Katya is bringing a talk on the Iset to the school conference. The draft has photos of the treatment plant and a quote from the mayor. There is no map: neither the source, nor where the river flows. What do you do?',
+        [
+          act(
+            'task',
+            'Пусть говорит про очистные, но сначала: откуда Исеть и куда несёт воду',
+            'Let her speak about the treatment plant, but first: where the Iset comes from and where it carries the water',
+            'Доклад про Исеть уместен: это река России. Без истока и устья в нём остаются только очистные.',
+            'A talk about the Iset belongs: it is a river of Russia. Without the source and the mouth only the treatment plant remains in it.',
+          ),
+          act(
+            'ethos',
+            'На конференции у всех один формат: карта реки, потом что угодно',
+            'At the conference everyone has one format: a map of the river, then whatever they like',
+            'Исеть ничем не хуже Волги. Сначала карта, потом очистные, мэр, что угодно.',
+            'The Iset is no worse than the Volga. First the map, then the treatment plant, the mayor, whatever they like.',
+          ),
+          act(
+            'personal',
+            'Спросить, что она сама успеет к пятнице: карту бассейна, цифры по воде, фото',
+            'Ask what she can finish herself by Friday: a map of the basin, figures on the water, photographs',
+            'Катя донесёт до конца тот кусок, который сделает сама.',
+            'Katya will carry to the end the piece she finishes herself.',
+          ),
+          act(
+            'subject',
+            'Исеть — река России. В докладе нужны исток, бассейн, куда впадает',
+            'The Iset is a river of Russia. The talk needs the source, the basin, where it flows',
+            'География реки — исток, бассейн, куда впадает. Фото очистных к этому добавляют.',
+            'The geography of a river is the source, the basin, where it flows. Photos of a treatment plant are added to that.',
+          ),
+        ],
+      ),
+      situation(
+        'Школьный этап олимпиады по биологии. На пятёрках трое. Лена троечница, но неделю сидит над определителем растений. Кого записываете?',
+        'The school round of the biology olympiad. Three have top marks. Lena’s marks are average, but she has spent a week over a plant key. Whom do you enter?',
+        [
+          act(
+            'task',
+            'Дать пробный вариант: кто возьмёт и дорешит, того и записываем',
+            'Give a trial paper: whoever takes it and finishes it, we enter',
+            'Пробный вариант отбирает по работе. Пятёрка за четверть и олимпиадная задача — разное.',
+            'A trial paper selects by the work. A top mark for the term and an olympiad problem are different things.',
+          ),
+          act(
+            'ethos',
+            'Записать тех, кто ходит в кружок: так в школе заведено',
+            'Enter those who go to the club: that is how it is done in this school',
+            'Кружок уже ходит на олимпиады. Правило ясное.',
+            'The club already goes to olympiads. The rule is clear.',
+          ),
+          act(
+            'personal',
+            'Предложить место Лене: определитель уже у неё',
+            'Offer a place to Lena: she already has the plant key',
+            'Олимпиада может быть следующим шагом для Лены.',
+            'The olympiad can be Lena’s next step.',
+          ),
+          act(
+            'community',
+            'Спросить класс, кого они хотят отправить',
+            'Ask the class whom they want to send',
+            'Класс выбирает, кого отправить.',
+            'The class chooses whom to send.',
+          ),
+        ],
+      ),
+      situation(
+        'Во время самостоятельной по английскому у Никиты на парте открыт переводчик в телефоне. Что сделаете?',
+        'During independent work in English, Nikita has a translator open on his phone on the desk. What do you do?',
+        [
+          act(
+            'ethos',
+            'Сказать Никите: телефон в сумку. Самостоятельная на бумаге',
+            'Tell Nikita: phone in the bag. The paper is on paper',
+            'Правило одно на всех: самостоятельная без телефона. Иначе проверяют скорость переводчика.',
+            'The rule is the same for everyone: independent work without a phone. Otherwise it is the speed of the translator that is being tested.',
+          ),
+          act(
+            'personal',
+            'Дать ему бумажный словарь и тот же текст',
+            'Give him a paper dictionary and the same text',
+            'Тот же текст, другой инструмент. Словарь заставляет выбрать значение.',
+            'The same text, another tool. A dictionary makes him choose a meaning.',
+          ),
+          act(
+            'community',
+            'Спросить класс, как будем делать самостоятельные, если переводчик под рукой',
+            'Ask the class how independent work will be done if a translator is at hand',
+            'Класс может сам назвать правило.',
+            'The class can name the rule itself.',
+          ),
+          act(
+            'subject',
+            'Сказать: переводчик подставляет чужую строку. Предмет — сказать это по-английски самому',
+            'Say: the translator inserts someone else’s line. The subject is to say it in English yourself',
+            'Предмет — уметь сказать по-английски. Подставленная строка переводчика этому не учит.',
+            'The subject is being able to say it in English. A line inserted by a translator does not teach that.',
+          ),
+        ],
+      ),
+      situation(
+        'За пять минут до звонка вы раздали самостоятельную. Двое лист не открыли, остальные стонут: «мы не успели, давайте без самостоятельной». Что сделаете?',
+        'Five minutes before the bell you have handed out the independent work. Two have not opened the sheet; the rest groan: “we did not have time, let’s skip it.” What do you do?',
+        [
+          act(
+            'task',
+            'Оставить листы, но снять последнее задание — его ещё не разбирали',
+            'Keep the sheets, but drop the last problem — it has not been gone through yet',
+            'Самостоятельная остаётся. Убирают последнее задание, которого на уроке не было.',
+            'The independent work stays. The last problem, which had not been taught, is dropped.',
+          ),
+          act(
+            'personal',
+            'Сесть к тем двоим, кто не начал, и дать им только первое задание',
+            'Sit with the two who have not started and give them only the first problem',
+            'Двое лист не открыли. Им первое задание, остальным — лист как есть.',
+            'Two have not opened the sheet. They get the first problem; the rest keep the sheet as it is.',
+          ),
+          act(
+            'community',
+            'Спросить класс: чего не хватило — времени, объяснения, тишины?',
+            'Ask the class: what was missing — time, explanation, quiet?',
+            'Класс сам называет причину.',
+            'The class itself names the cause.',
+          ),
+          act(
+            'subject',
+            'Самостоятельную оставить: она показывает, что уже умеете',
+            'Keep the independent work: it shows what you can already do',
+            'Проверка входит в предмет. Отмена в последние пять минут стирает именно это.',
+            'A check belongs to the subject. Cancelling in the last five minutes erases exactly that.',
+          ),
+        ],
+      ),
+      situation(
+        'После контрольной по русскому у Лизы слёзы: за сочинение тройка. Что сделаете?',
+        'After a Russian test Lisa is in tears: a three for the composition. What do you do?',
+        [
+          act(
+            'task',
+            'Открыть её сочинение: вот абзац, который вышел, вот где кончился довод',
+            'Open her composition: here is the paragraph that worked, here is where the argument ran out',
+            'Тройку без текста не обсуждают. Абзац, который вышел, и место, где нет довода, уже следующая работа.',
+            'A three is not discussed without the text. The paragraph that worked and the place where the argument is missing are already the next piece of work.',
+          ),
+          act(
+            'ethos',
+            'Не разбирать оценку при всех. Минута, стакан воды. Поговорим после звонка',
+            'Do not take the mark apart in front of everyone. A minute, a glass of water. We will talk after the bell',
+            'Слёзы при всём классе не разбирают вслух. После звонка можно вернуться к тексту.',
+            'Tears in front of the whole class are not taken apart aloud. After the bell one can return to the text.',
+          ),
+          act(
+            'community',
+            'Попросить соседку по парте посидеть рядом. Сейчас без советов, как надо было',
+            'Ask the girl at the next desk to sit nearby. No advice just now on how it should have been',
+            'Человек рядом нужен. Разбор «надо было так» подождёт.',
+            'A person nearby is needed. A post-mortem of “you should have done it like this” can wait.',
+          ),
+          act(
+            'subject',
+            'Показать в её сочинении, как к тезису дописывают пример',
+            'Show in her composition how an example is added to a thesis',
+            'В сочинении тезис держат примером. У Лизы тезис есть, примера в этом абзаце нет.',
+            'In a composition a thesis is held by an example. Lisa has a thesis; this paragraph has no example.',
+          ),
+        ],
+      ),
+    ],
+  },
+]
+
+export function teacherSetById(id: string): TeacherSet {
+  const found = teacherSets.find((set) => set.id === id)
+  if (!found) throw new Error(`Unknown teacher set: ${id}`)
+  return found
+}

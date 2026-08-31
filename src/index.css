@@ -341,6 +341,30 @@ button:focus-visible,
   animation: choice-fact-in 280ms 70ms var(--ease-out) both;
 }
 
+.portrait-sky {
+  overflow: visible;
+}
+
+.portrait-link {
+  stroke: rgb(200 219 232 / 0.22);
+  stroke-width: 0.35;
+}
+
+.portrait-link-on {
+  stroke: rgb(126 231 255 / 0.55);
+  stroke-width: 0.45;
+  filter: drop-shadow(0 0 1.2px rgb(126 231 255 / 0.45));
+}
+
+.portrait-star {
+  fill: rgb(200 219 232 / 0.55);
+}
+
+.portrait-star-on {
+  fill: rgb(232 246 255 / 0.98);
+  filter: drop-shadow(0 0 4px rgb(126 231 255 / 0.85)) drop-shadow(0 0 10px rgb(88 84 164 / 0.55));
+}
+
 @keyframes choice-fact-in {
   from {
     opacity: 0;

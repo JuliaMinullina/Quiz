@@ -19,9 +19,12 @@ export const modes: readonly Mode[] = [
   },
   {
     id: 'teacher',
-    kind: 'stub',
+    kind: 'portrait',
     title: t('Какой вы педагог', 'What teacher are you'),
-    blurb: t('Тест для педагогов. Скоро.', 'A test for teachers. Coming soon.'),
+    blurb: t(
+      'Пять ситуаций в классе. В конце — портрет.',
+      'Five classroom situations. A portrait at the end.',
+    ),
   },
   {
     id: 'cyber',

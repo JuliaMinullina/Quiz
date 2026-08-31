@@ -23,8 +23,4 @@ export const ui = {
   done: { ru: 'Готово', en: 'Done' },
   langRu: { ru: 'RU', en: 'RU' },
   langEn: { ru: 'EN', en: 'EN' },
-  teacherStub: {
-    ru: 'Этот тест появится позже.',
-    en: 'This test will appear later.',
-  },
 } as const satisfies Record<string, Text>
